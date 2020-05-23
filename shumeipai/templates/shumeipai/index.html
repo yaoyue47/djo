@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+    <link rel="shortcut icon" href="/static/shumeipai/fly.ico" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/static/shumeipai/index/ajax.js"></script>
+</head>
+<body class="bg-light">
+<div class="container shadow  bg-white p-5" style="border-radius: 15px;margin-top:120px;width: 500px">
+    <h1 style="text-align: center;margin: 20px" >
+        <img src="/static/shumeipai/logo.png" style="width:14%">
+        树莓派监控系统</h1>
+    <form action="api/login/" method="post" onSubmit="return check_pd()">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="user">登录名</label>
+            <input type="text" class="form-control" id="user" placeholder="Enter user" name="user">
+        </div>
+        <div class="form-group">
+            <label for="pwd">密码</label>
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="check" checked="checked"> 下次自动登录
+            </label>
+        </div>
+        <p class="text-danger">测试账号:yaoyue,测试密码:123456</p>
+        <br>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-primary mr-3">&nbsp登录&nbsp</button>
+            <a href="register/">
+                <button type="button" class="btn btn-primary ml-3">&nbsp注册&nbsp</button>
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    function check_pd() {
+        var user = document.getElementById('user').value;
+        var pwd = document.getElementById('pwd').value;
+        var flag=false;
+        $.ajax({
+            url: "api/login_ajax/",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify({
+                "user": user,
+                "pwd": pwd
+            }),
+            async: false,
+            contentType: "application/json",
+            success: function (data) {
+                if(data.res===0){
+                    alert("账号或密码错误，请重新填写")}
+                else flag=true
+            },
+            error:function () {
+                alert("ajax请求失败，请联系管理员")
+            }
+
+
+        });
+        return flag;
+
+    }
+
+</script>
+</html>

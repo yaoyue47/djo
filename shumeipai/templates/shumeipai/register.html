@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册界面</title>
+    <link rel="shortcut icon" href="/static/shumeipai/fly.ico" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+<div class="container shadow  bg-white p-5" style="border-radius: 15px;margin-top:40px;width: 500px">
+    <h1 style="text-align: center;margin: 20px">欢迎注册</h1>
+    <p>已有账号?<a href="../">登录</a></p>
+    <form>
+        <div class="form-group">
+            <label for="user">登录名</label>
+            <input type="text" maxlength=10 class="form-control" id="user" placeholder="Enter user">
+        </div>
+        <div class="form-group">
+            <label for="pwd">密码</label>
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+        </div>
+        <div class="form-group">
+            <label for="re_pwd">重复一下密码</label>
+            <input type="password" class="form-control" id="re_pwd" placeholder="Check it">
+        </div>
+        <div class="form-group">
+            <label for="name">初始节点名字</label>
+            <input type="text" maxlength=10 class="form-control" id="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label for="email">您的邮箱</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter e-mail">
+        </div>
+        <div style="text-align: center">
+            <button type="button" class="btn btn-primary mr-3" onclick="submit_()">&nbsp提交&nbsp</button>
+            <a href="../">
+                <button type="button" class="btn btn-primary ml-3">&nbsp取消&nbsp</button>
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    function submit_() {
+        var user= document.getElementById("user").value
+        var pwd= document.getElementById("pwd").value
+        var re_pwd= document.getElementById("re_pwd").value
+        var name= document.getElementById("name").value
+        var email= document.getElementById("email").value
+        if(user===""||pwd===''||name===''||email===''){
+            alert("不可输入为空")
+        }
+        else if(pwd!==re_pwd){
+            alert("两次密码输入错误")
+        }
+        else {
+            $.ajax({
+                url: "api/ajax/",
+                type: "post",
+                dataType: "json",
+                data: JSON.stringify({
+                    "user": user,
+                    "pwd": pwd,
+                    "name":name,
+                    "email":email,
+                }),
+                contentType: "application/json",
+                success: function (data) {
+                    if (data===0){
+                        alert("注册成功，点击返回登录界面")
+                        window.location.href="../"
+                    }
+                    else if(data===1)
+                    {
+                        alert("邮箱格式出错")
+                    }
+                    else if(data===2)
+                    {
+                        alert("用户名被占用啦")
+                    }
+                    else if(data===3)
+                    {
+                        alert("节点名被占用啦")
+                    }
+                    else if(data===4)
+                    {
+                        alert("未知错误,请联系管理员")
+                    }
+
+                },
+                error:function () {
+                    alert("ajax请求失败，请联系管理员")
+                }
+
+            });
+        }
+    }
+</script>
+</html>

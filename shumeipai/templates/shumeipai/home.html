@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>节点检测系统</title>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+    <!--上面为移动端的解决方案-->
+
+    <link rel="shortcut icon" href="/static/shumeipai/fly.ico" />
+    <!--ico引入-->
+
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/echarts/4.3.0-rc.1/echarts-en.common.js"></script>
+    <!--以上为echats的js-->
+
+    <link rel="stylesheet" href="/static/shumeipai/home/tabs-basic.css">
+    <script type="text/javascript" src="/static/shumeipai/home/tabs.js"></script>
+    <!--以上为tab选项卡的js-->
+
+    <link rel="stylesheet" href="/static/shumeipai/home/myPagination.css">
+    <script type="text/javascript" src="/static/shumeipai/home/myPagination.js"></script>
+    <script type="text/javascript" src="/static/shumeipai/home/Pagination.js"></script>
+    <!--以上为按钮组的js引入-->
+
+
+    <!--<script type="text/javascript" src="searchdata.js"></script>-->
+    <!-- 查询搜索数据的js-->
+
+    <script type="text/javascript" src="/static/shumeipai/home/getdata.js"></script>
+    <!--查询表格数据-->
+
+    <script type="text/javascript" src="/static/shumeipai/home/getechartsdata.js"></script>
+    <!--查询图表数据-->
+
+</head>
+
+<body class="bg-light">
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">欢迎界面</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body" style="text-align: center">
+                <h3>欢迎使用本系统!</h3>
+                <br>
+                <h5>当前登录用户:<mark>{{ user }}</mark></h5>
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- 模态框 -->
+
+<!--头部-->
+<div class="container">
+    <div class="container shadow p-3 mt-3 bg-white " style="border-radius: 15px;">
+
+        <div>
+            <h1 style="float: left;margin:0">
+                <img src="/static/shumeipai/logo.png" style="width:8%">
+                温湿度监测系统</h1>
+            <h5 style="float: right;margin-top: 2%;margin-bottom: 0px" class="text-muted">在此搜索指定日期</h5>
+            <div style="clear: both;"></div>
+        </div>
+
+        <div class="dropdown mt-3">
+
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ shumeipai_now }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                {% for i  in shumeipai %}
+                    {% if i  == shumeipai_now %}
+                        <a class="dropdown-item active" href="?raspberry={{ i }}">{{ i }}</a>
+                    {% else %}
+                        <a class="dropdown-item" href="?raspberry={{ i }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+                <div class="dropdown-divider"></div>
+                <form action="api/configure/" method="post">
+                    {% csrf_token %}
+                    <input name="user" value="{{ user }}" type="hidden">
+                    <button class="dropdown-item" type="submit">修改配置</button>
+                </form>
+            </div>
+
+            <form method="post" action="api/logout/" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary ml-3">登出</button>
+            </form>
+
+            <form action="api/search/" method="post" style="display: inline">
+                {% csrf_token %}
+                <div class="input-group" style="width: 400px;float: right;">
+                    <input type="date" class="form-control"  id="input_date" name="input_date">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="submit">搜索</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<!--头部-->
+
+<div class="container mt-4 text-muted">
+    <div class="container shadow p-3 mt-3 bg-white " style="border-radius: 15px;">
+        <h6>当前登录用户 : {{ user }}</h6>
+        <h6>当前节点IP : 2001:250:5405:14:cd54:4370:4e99:634c</h6>
+        <h6>当前节点MAC : 18-66-DA-E5-EC-48</h6>
+        <h6>本站点击次数 : {{ click_time }} 点击</h6>
+    </div>
+</div>
+
+<!--以下为大模块的页面-->
+
+<!--tabs选项卡-->
+<div class="tabs-basic container  mt-4" >
+
+    <div class="tabs-basic-">
+        <ul>
+            <li>
+                <a class="tab-active" data-index="0" href="#">历史温度</a>
+            </li>
+            <li>
+                <a data-index="1" href="#">历史湿度</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <!--以下为tab的大类-->
+    <div class="tabs">
+        <div class="container shadow p-3  bg-white tabs-active" style="border-radius:0 15px 15px 15px;">
+            <h3 class="m-3">历史记录</h3>
+            <table class="table  table-striped ">
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>温度 ℃</th>
+                    <th>涨幅 ℃</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id=wtime0>xxx</td>
+                    <td id=wdata0>xxx</td>
+                    <td id=wdis0>xxx</td>
+                </tr>
+                <tr>
+                    <td id=wtime1>xxx</td>
+                    <td id=wdata1>xxx</td>
+                    <td id=wdis1>xxx</td>
+                </tr>
+                <tr>
+                    <td id=wtime2>xxx</td>
+                    <td id=wdata2>xxx</td>
+                    <td id=wdis2>xxx</td>
+                </tr>
+                <tr>
+                    <td id=wtime3>xxx</td>
+                    <td id=wdata3>xxx</td>
+                    <td id=wdis3>xxx</td>
+                </tr>
+                <tr>
+                    <td id=wtime4>xxx</td>
+                    <td id=wdata4>xxx</td>
+                    <td id=wdis4>xxx</td>
+                </tr>
+                <tr>
+                    <td id=wtime5>xxx</td>
+                    <td id=wdata5>xxx</td>
+                    <td id=wdis5>xxx</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination_wendu" class="pagination"></div>
+            <!--以上为按钮组-->
+            <h3 class="m-3">统计数据</h3>
+
+            <div id="main_wendu" style="height: 500px"></div>
+            <!--echarts的表格-->
+            <div class="pagination">
+                <ul>
+                    <li onclick="getechartsdata(7,'wendu')">最近一周</li>
+                    <li onclick="getechartsdata(3,'wendu')">近3天</li>
+                    <li onclick="getechartsdata(1,'wendu')">当前</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--两个tabs分割线-->
+
+        <div class="container shadow p-3  bg-white tabs-disactive" style="border-radius:15px 15px 15px 15px;">
+            <h3 class="m-3">历史记录</h3>
+            <table class="table  table-striped ">
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>湿度%</th>
+                    <th>涨幅%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id=stime0>xxx</td>
+                    <td id=sdata0>xxx</td>
+                    <td id=sdis0>xxx</td>
+                </tr>
+                <tr>
+                    <td id=stime1>xxx</td>
+                    <td id=sdata1>xxx</td>
+                    <td id=sdis1>xxx</td>
+                </tr>
+                <tr>
+                    <td id=stime2>xxx</td>
+                    <td id=sdata2>xxx</td>
+                    <td id=sdis2>xxx</td>
+                </tr>
+                <tr>
+                    <td id=stime3>xxx</td>
+                    <td id=sdata3>xxx</td>
+                    <td id=sdis3>xxx</td>
+                </tr>
+                <tr>
+                    <td id=stime4>xxx</td>
+                    <td id=sdata4>xxx</td>
+                    <td id=sdis4>xxx</td>
+                </tr>
+                <tr>
+                    <td id=stime5>xxx</td>
+                    <td id=sdata5>xxx</td>
+                    <td id=sdis5>xxx</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination_shidu" class="pagination"></div>
+
+            <h3 class="m-3">统计数据</h3>
+
+            <div id="main_shidu" style="height: 500px"></div>
+            <!--echarts的表格-->
+
+            <div class="pagination">
+                <ul>
+                    <li onclick="getechartsdata(7,'shidu')">最近一周</li>
+                    <li onclick="getechartsdata(3,'shidu')">近3天</li>
+                    <li onclick="getechartsdata(1,'shidu')">当前</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="height: 40px"></div>
+
+</body>
+
+<script type="text/javascript">
+    if(window.location.search==''){
+        $("#myModal").modal("show");
+    }
+
+    var shumeipai_name_list = {{shumeipai|safe}}
+    var shumeipai_name = {{ shumeipai_now|safe }}
+
+        getdata(1,"wendu");
+    getdata(1,"shidu");
+
+    var myChart_wendu_dom=document.getElementById("main_wendu");
+    var myChart_shidu_dom=document.getElementById("main_shidu");
+    myChart_shidu_dom.style.height=myChart_wendu_dom.clientHeight+"px";
+    myChart_shidu_dom.style.width=myChart_wendu_dom.clientWidth+"px";
+    var myChart_wendu = echarts.init(myChart_wendu_dom);
+    var myChart_shidu=echarts.init(myChart_shidu_dom);//初始化echarts的对象
+
+    getechartsdata(7,"wendu");//获取图表的数据
+    getechartsdata(7,"shidu");
+
+</script>
+
+</html>

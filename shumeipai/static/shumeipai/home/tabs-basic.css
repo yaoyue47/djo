@@ -1,0 +1,36 @@
+
+.tabs-basic .tabs-basic- ul{
+    list-style: none;
+    text-align: left;
+
+    margin: 0;
+    padding: 0;
+}
+
+.tabs-basic .tabs-basic- ul li{
+    display: inline-block;
+    margin-bottom: -1px;
+}
+
+.tabs-basic .tabs-basic- a{
+    display: block;
+    text-decoration:none;
+    color: black;
+    padding: 15px 100px 15px;
+}
+
+.tabs-basic .tabs-basic- .tab-active {
+    border-color: #dddddd;
+    background-color:#ffffff;
+    border-radius: 15px 15px 0 0;
+}
+
+
+.tabs-basic .tabs div.tabs-disactive{
+    display: none;
+}
+
+.tabs-basic .tabs div.tabs-active{
+    display: block;
+}
+
