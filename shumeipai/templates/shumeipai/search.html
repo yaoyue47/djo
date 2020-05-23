@@ -63,6 +63,14 @@
                         <label for="hum" class="mr-3">湿度:</label>
                         <input type="number" step = "0.01" class="form-control" id="hum" style="width: 50%;display: inline">
                     </div>
+                    <div class="form-group">
+                        <label for="ph" class="mr-3">ph:</label>
+                        <input type="number" step = "0.1" class="form-control" id="ph" style="width: 50%;display: inline">
+                    </div>
+                    <div class="form-group">
+                        <label for="sun" class="mr-3">光强:</label>
+                        <input type="number" step = "0.1" class="form-control" id="sun" style="width: 50%;display: inline">
+                    </div>
                 </form>
             </div>
 
@@ -89,6 +97,8 @@
                 <th>datetime</th>
                 <th>temperature</th>
                 <th>humidity</th>
+                <th>ph</th>
+                <th>Light intensity</th>
                 <th>action</th>
             </tr>
             </thead>
@@ -99,9 +109,11 @@
                     <td>{{ i.datetime|date:"Y-m-d H:i:s" }}</td>
                     <td>{{ i.temperature|floatformat:2 }}</td>
                     <td>{{ i.humidity|floatformat:2 }}</td>
+                    <td>{{ i.ph|floatformat:1 }}</td>
+                    <td>{{ i.sun|floatformat:1 }}</td>
                     <td style="width: 14%">
                         <button type="button" class="btn  btn-outline-secondary" onclick="delete_({{ i.id }},'{{ i.datetime|date:"Y-m-d H:i:s" }}')">删除</button>
-                        <button type="button" class="btn  btn-outline-secondary" onclick="update_({{ i.id }},'{{ i.datetime|date:"Y-m-d H:i:s" }}',{{ i.temperature  }},{{ i.humidity }})">修改</button>
+                        <button type="button" class="btn  btn-outline-secondary" onclick="update_({{ i.id }},'{{ i.datetime|date:"Y-m-d H:i:s" }}',{{ i.temperature  }},{{ i.humidity }},{{ i.ph }},{{ i.sun }})">修改</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -139,22 +151,28 @@
             }
         });
     }
-    function update_(id,datetime,tem,hum) {
+    function update_(id,datetime,tem,hum,ph,sun) {
         ID=id
         document.getElementById("date").value=datetime
         document.getElementById("tem").value=tem
         document.getElementById("hum").value=hum
+        document.getElementById("ph").value=ph
+        document.getElementById("sun").value=sun
         $("#myModal_update").modal("show");
     }
     function update_ajax() {
         tem=document.getElementById("tem").value
         hum=document.getElementById("hum").value
+        ph=document.getElementById("ph").value
+        sun=document.getElementById("sun").value
         $.ajax({
             url:"delete_update/",
             data:{
                 "id":ID,
                 "temperature":tem,
-                "humidity":hum
+                "humidity":hum,
+                "ph":ph,
+                "sun":sun
             },
             type:"POST",
             success:function(req){

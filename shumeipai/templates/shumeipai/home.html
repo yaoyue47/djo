@@ -146,6 +146,12 @@
             <li>
                 <a data-index="1" href="#">历史湿度</a>
             </li>
+            <li>
+                <a data-index="2" href="#">土壤ph值</a>
+            </li>
+            <li>
+                <a data-index="3" href="#">光照强度</a>
+            </li>
         </ul>
     </div>
 
@@ -272,6 +278,128 @@
                 </ul>
             </div>
         </div>
+        <!--两个tabs分割线-->
+
+        <div class="container shadow p-3  bg-white tabs-disactive" style="border-radius:15px 15px 15px 15px;">
+            <h3 class="m-3">历史记录</h3>
+            <table class="table  table-striped ">
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>PH</th>
+                    <th>涨幅%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id=phtime0>xxx</td>
+                    <td id=phdata0>xxx</td>
+                    <td id=phdis0>xxx</td>
+                </tr>
+                <tr>
+                    <td id=phtime1>xxx</td>
+                    <td id=phdata1>xxx</td>
+                    <td id=phdis1>xxx</td>
+                </tr>
+                <tr>
+                    <td id=phtime2>xxx</td>
+                    <td id=phdata2>xxx</td>
+                    <td id=phdis2>xxx</td>
+                </tr>
+                <tr>
+                    <td id=phtime3>xxx</td>
+                    <td id=phdata3>xxx</td>
+                    <td id=phdis3>xxx</td>
+                </tr>
+                <tr>
+                    <td id=phtime4>xxx</td>
+                    <td id=phdata4>xxx</td>
+                    <td id=phdis4>xxx</td>
+                </tr>
+                <tr>
+                    <td id=phtime5>xxx</td>
+                    <td id=phdata5>xxx</td>
+                    <td id=phdis5>xxx</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination_ph" class="pagination"></div>
+
+            <h3 class="m-3">统计数据</h3>
+
+            <div id="main_ph" style="height: 500px"></div>
+            <!--echarts的表格-->
+
+            <div class="pagination">
+                <ul>
+                    <li onclick="getechartsdata(7,'ph')">最近一周</li>
+                    <li onclick="getechartsdata(3,'ph')">近3天</li>
+                    <li onclick="getechartsdata(1,'ph')">当前</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--两个tabs分割线-->
+        <div class="container shadow p-3  bg-white tabs-disactive" style="border-radius:15px 15px 15px 15px;">
+            <h3 class="m-3">历史记录</h3>
+            <table class="table  table-striped ">
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>光照强度lux</th>
+                    <th>涨幅lux</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id=suntime0>xxx</td>
+                    <td id=sundata0>xxx</td>
+                    <td id=sundis0>xxx</td>
+                </tr>
+                <tr>
+                    <td id=suntime1>xxx</td>
+                    <td id=sundata1>xxx</td>
+                    <td id=sundis1>xxx</td>
+                </tr>
+                <tr>
+                    <td id=suntime2>xxx</td>
+                    <td id=sundata2>xxx</td>
+                    <td id=sundis2>xxx</td>
+                </tr>
+                <tr>
+                    <td id=suntime3>xxx</td>
+                    <td id=sundata3>xxx</td>
+                    <td id=sundis3>xxx</td>
+                </tr>
+                <tr>
+                    <td id=suntime4>xxx</td>
+                    <td id=sundata4>xxx</td>
+                    <td id=sundis4>xxx</td>
+                </tr>
+                <tr>
+                    <td id=suntime5>xxx</td>
+                    <td id=sundata5>xxx</td>
+                    <td id=sundis5>xxx</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination_sun" class="pagination"></div>
+
+            <h3 class="m-3">统计数据</h3>
+
+            <div id="main_sun" style="height: 500px"></div>
+            <!--echarts的表格-->
+
+            <div class="pagination">
+                <ul>
+                    <li onclick="getechartsdata(7,'sun')">最近一周</li>
+                    <li onclick="getechartsdata(3,'sun')">近3天</li>
+                    <li onclick="getechartsdata(1,'sun')">当前</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -289,16 +417,25 @@
 
         getdata(1,"wendu");
     getdata(1,"shidu");
+    getdata(1,"ph");
+    getdata(1,"sun");
 
     var myChart_wendu_dom=document.getElementById("main_wendu");
     var myChart_shidu_dom=document.getElementById("main_shidu");
-    myChart_shidu_dom.style.height=myChart_wendu_dom.clientHeight+"px";
-    myChart_shidu_dom.style.width=myChart_wendu_dom.clientWidth+"px";
+    var myChart_ph_dom=document.getElementById("main_ph");
+    var myChart_sun_dom=document.getElementById("main_sun");
+    myChart_ph_dom.style.height=myChart_sun_dom.style.height=myChart_shidu_dom.style.height=myChart_wendu_dom.clientHeight+"px";
+    myChart_ph_dom.style.width=myChart_sun_dom.style.width=myChart_shidu_dom.style.width=myChart_wendu_dom.clientWidth+"px";
+
     var myChart_wendu = echarts.init(myChart_wendu_dom);
     var myChart_shidu=echarts.init(myChart_shidu_dom);//初始化echarts的对象
+    var myChart_ph = echarts.init(myChart_ph_dom);
+    var myChart_sun=echarts.init(myChart_sun_dom);//初始化echarts的对象
 
     getechartsdata(7,"wendu");//获取图表的数据
     getechartsdata(7,"shidu");
+    getechartsdata(7,"ph");//获取图表的数据
+    getechartsdata(7,"sun");
 
 </script>
 

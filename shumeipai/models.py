@@ -21,6 +21,8 @@ class Main_data(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     temperature = models.FloatField()
     humidity = models.FloatField()
+    ph = models.FloatField(default=7.0)
+    sun = models.FloatField(default=1000)
     name = models.ForeignKey(Shumeipai, on_delete=CASCADE, db_index=True)
 
 

@@ -110,7 +110,7 @@ def get_excel_data(request):  # 接受数据：page(int),shumeipai_name(str)
     return_data = []
     for i in data:
         creat_object = {"id": i.id, 'time': i.datetime.strftime('%Y-%m-%d %H:%M:%S'), 'temperature': i.temperature,
-                        'humidity': i.humidity}
+                        'humidity': i.humidity, 'ph': i.ph, 'sun': i.sun}
         return_data.append(creat_object)
     return JsonResponse(return_data, safe=False)
 
@@ -134,15 +134,21 @@ def get_echarts_data(request):
     return_data = {
         "time": [],
         "temperature": [],
-        "humidity": []
+        "humidity": [],
+        "ph": [],
+        "sun": []
     }
     for i in data:
         return_data['time'].append(i.datetime.strftime('%y-%m-%d %H:%M:%S'))
         return_data['temperature'].append(i.temperature)
         return_data['humidity'].append(i.humidity)
+        return_data['ph'].append(i.ph)
+        return_data['sun'].append(i.sun)
     return_data["time"].reverse()
     return_data["temperature"].reverse()
     return_data["humidity"].reverse()
+    return_data["ph"].reverse()
+    return_data["sun"].reverse()
     return JsonResponse(return_data)
     # 接口文档：接受请求：tianshu：(str)("1",'3','7') shumeipai_name(str) 返回数据：{"time": ["20-04-24 19:47:12", "20-04-24
     # 01:49:01", "20-04-20 11:55:03"], "temperature": [10.01, 13.78, 22.21], "humidity": [21.16, 11.46, 42.92]}
@@ -180,9 +186,13 @@ def search_delete_update(request):  # 0为错1为对
         tem_f = round(float(tem), 2)
         hum = request.POST.get("humidity")
         hum_f = round(float(hum), 2)
+        ph = request.POST.get("ph")
+        ph_f = round(float(ph), 1)
+        sun = request.POST.get("sun")
+        sun_f = round(float(sun), 1)
         id = request.POST.get("id")
         try:
-            Main_data.objects.filter(id=id).update(temperature=tem_f, humidity=hum_f)
+            Main_data.objects.filter(id=id).update(temperature=tem_f, humidity=hum_f,ph=ph_f,sun=sun_f)
             return HttpResponse("1")
         except:
             return HttpResponse("0")
