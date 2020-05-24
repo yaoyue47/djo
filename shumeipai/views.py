@@ -66,12 +66,13 @@ def home(request):
         shumeipai_getdata = request.GET.get('raspberry')
         set_cookie = False
         cookie_data = ''
+        cookie_get = json.loads(request.COOKIES.get('raspberry'))
         if shumeipai_getdata and shumeipai_getdata in shumeipai_name:
             shumeipai_now = shumeipai_getdata
             set_cookie = True
             cookie_data = shumeipai_getdata
-        elif request.COOKIES.get('raspberry') and request.COOKIES.get('raspberry') in shumeipai_name:
-            shumeipai_now = request.COOKIES['raspberry']
+        elif cookie_get and cookie_get in shumeipai_name:
+            shumeipai_now = cookie_get
         else:
             shumeipai_now = shumeipai_name[0]
             set_cookie = True
@@ -88,7 +89,7 @@ def home(request):
         }
         response = render(request, 'shumeipai/home.html', render_data)
         if set_cookie:
-            response.set_cookie("raspberry", cookie_data, 60 * 60 * 24 * 7)
+            response.set_cookie("raspberry", json.dumps(cookie_data), 60 * 60 * 24 * 7)
         return response
     else:
         return redirect('shumeipai:index')
@@ -160,7 +161,7 @@ def search(request):
         if date_str == "":
             return render(request, 'shumeipai/search.html', {"date_json": []})
         user = request.session['user']
-        shumeipai = request.COOKIES['raspberry']
+        shumeipai = json.loads(request.COOKIES['raspberry'])
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d')
         user_db = User.objects.get(user_name=user)
         shumeipai_db = user_db.shumeipai_set.get(name=shumeipai)
