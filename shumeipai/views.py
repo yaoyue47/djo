@@ -1,7 +1,6 @@
 import datetime
 import json
-from .module import re_email
-
+from .module import re_email, captcha
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -273,3 +272,21 @@ def register_ajax(request):
             return HttpResponse("4")
     else:
         return HttpResponse("不支持get访问")
+
+
+def captcha_(request):
+    captcha_object = captcha.captcha()
+    text = captcha_object.run()  # 得到当前生成验证码图片内容
+    request.session['text'] = text  # 传递正确的验证码，用于判断
+    imagepath = "captcha.png"  # 存储验证码 图片 的路径
+    image_data = open(imagepath, "rb").read()
+    return HttpResponse(image_data, content_type="image/jpg")
+
+
+def captcha_ajax(request):  # 0为错 1为对
+    right_text = request.GET.get('text').lower()
+    user_text = request.session.get('text').lower()
+    if right_text == user_text:
+        return HttpResponse('1')
+    else:
+        return HttpResponse('0')
