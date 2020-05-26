@@ -40,17 +40,22 @@ def login(request):
             return HttpResponse('密码错误')
 
 
-def login_ajax(request):  # ajax登录验证的接口 0为错1为对
+def login_ajax(request):  # ajax登录验证的接口 0为错1为对2验证码错误
     user = json.loads(request.body).get('user')
     pwd = json.loads(request.body).get('pwd')
+    user_captcha = json.loads(request.body).get('captcha').lower()
+    right_captcha = request.session.get('text').lower()
     try:
         a = User.objects.get(user_name=user)
     except User.DoesNotExist:
         return JsonResponse({'res': 0})
-    if a.password == pwd:
-        dit = {'res': 1}
-    else:
+    if a.password != pwd:
         dit = {'res': 0}
+    elif user_captcha != right_captcha:
+        dit = {'res': 2}
+    else:
+        dit = {'res': 1}
+
     return JsonResponse(dit)
 
 
@@ -192,7 +197,7 @@ def search_delete_update(request):  # 0为错1为对
         sun_f = round(float(sun), 1)
         id = request.POST.get("id")
         try:
-            Main_data.objects.filter(id=id).update(temperature=tem_f, humidity=hum_f,ph=ph_f,sun=sun_f)
+            Main_data.objects.filter(id=id).update(temperature=tem_f, humidity=hum_f, ph=ph_f, sun=sun_f)
             return HttpResponse("1")
         except:
             return HttpResponse("0")
@@ -291,12 +296,3 @@ def captcha_(request):
     imagepath = "captcha.png"  # 存储验证码 图片 的路径
     image_data = open(imagepath, "rb").read()
     return HttpResponse(image_data, content_type="image/jpg")
-
-
-def captcha_ajax(request):  # 0为错 1为对
-    right_text = request.GET.get('text').lower()
-    user_text = request.session.get('text').lower()
-    if right_text == user_text:
-        return HttpResponse('1')
-    else:
-        return HttpResponse('0')

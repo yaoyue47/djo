@@ -12,7 +12,6 @@ urlpatterns = [
     path('api/login/', views.login, name='login'),
     path('api/login_ajax/', views.login_ajax, name='login_ajax'),
     path('api/captcha/', views.captcha_, name='captcha'),
-    path('api/captcha_ajax', views.captcha_ajax, name='captcha_ajax'),
     path('home/api/logout/', views.logout, name='logout'),
     path('home/api/search/', views.search, name='search'),
     path('home/api/configure/', views.configure, name='configure'),

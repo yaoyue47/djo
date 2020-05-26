@@ -11,19 +11,24 @@
     <script src="/static/shumeipai/index/ajax.js"></script>
 </head>
 <body class="bg-light">
-<div class="container shadow  bg-white p-5" style="border-radius: 15px;margin-top:120px;width: 500px">
+<div class="container shadow  bg-white p-5" style="border-radius: 15px;margin-top:60px;width: 500px">
     <h1 style="text-align: center;margin: 20px" >
         <img src="/static/shumeipai/logo.png" style="width:14%">
         分布式监测信息管理平台</h1>
     <form action="api/login/" method="post" onSubmit="return check_pd()">
         {% csrf_token %}
         <div class="form-group">
-            <label for="user">登录名</label>
+            <label for="user">登录名:</label>
             <input type="text" class="form-control" id="user" placeholder="Enter user" name="user">
         </div>
         <div class="form-group">
-            <label for="pwd">密码</label>
+            <label for="pwd">密码:</label>
             <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+        </div>
+        <div class="form-group">
+            <label for="captcha">验证码:<span class="text-danger">(点击图片即可刷新,不区分大小写)</span></label>
+            <input type="text" class="form-control" style="width: 28%;display: inline" id="captcha" >
+            <img src="api/captcha/" onclick="change_captcha()" id="img_captcha">
         </div>
         <div class="form-check">
             <label class="form-check-label">
@@ -45,6 +50,7 @@
     function check_pd() {
         var user = document.getElementById('user').value;
         var pwd = document.getElementById('pwd').value;
+        var captcha = document.getElementById('captcha').value;
         var flag=false;
         $.ajax({
             url: "api/login_ajax/",
@@ -52,14 +58,18 @@
             dataType: "json",
             data: JSON.stringify({
                 "user": user,
-                "pwd": pwd
+                "pwd": pwd,
+                "captcha":captcha
             }),
             async: false,
             contentType: "application/json",
             success: function (data) {
                 if(data.res===0){
                     alert("账号或密码错误，请重新填写")}
-                else flag=true
+                else if (data.res===2){
+                    alert('验证码错误，请重新填写')
+                    change_captcha()
+                }else flag=true
             },
             error:function () {
                 alert("ajax请求失败，请联系管理员")
@@ -69,6 +79,10 @@
         });
         return flag;
 
+    }
+
+    function change_captcha() {
+        document.getElementById('img_captcha').src='api/captcha/?'+Math.random();
     }
 
 </script>
