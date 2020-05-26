@@ -49,10 +49,10 @@ def login_ajax(request):  # ajax登录验证的接口 0为错1为对2验证码�
         a = User.objects.get(user_name=user)
     except User.DoesNotExist:
         return JsonResponse({'res': 0})
-    if a.password != pwd:
-        dit = {'res': 0}
-    elif user_captcha != right_captcha:
+    if user_captcha != right_captcha:
         dit = {'res': 2}
+    elif a.password != pwd:
+        dit = {'res': 0}
     else:
         dit = {'res': 1}
 
