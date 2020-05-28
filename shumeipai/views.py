@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 
-from shumeipai.models import User, Shumeipai, Main_data, System_inf
+from shumeipai.models import User, Shumeipai, Main_data, System_inf, Shumeipai_limited
 
 
 def index(request):
@@ -254,7 +254,8 @@ def configure_insert(request):
         remarks = request.POST.get('remarks')
         try:
             user_db = User.objects.get(user_name=user)
-            user_db.shumeipai_set.create(name=name, remarks=remarks)
+            shumeipai_db = user_db.shumeipai_set.create(name=name, remarks=remarks)
+            Shumeipai_limited.objects.create(shumeipai=shumeipai_db)
             return HttpResponse("1")
         except:
             return HttpResponse("0")
@@ -281,7 +282,8 @@ def register_ajax(request):
             return HttpResponse("3")
         try:
             user_db = User.objects.create(user_name=user, password=pwd, email=email)
-            user_db.shumeipai_set.create(name=name)
+            shumeipai_db = user_db.shumeipai_set.create(name=name)
+            Shumeipai_limited.objects.create(shumeipai=shumeipai_db)
             return HttpResponse("0")
         except:
             return HttpResponse("4")

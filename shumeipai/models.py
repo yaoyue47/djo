@@ -17,6 +17,18 @@ class Shumeipai(models.Model):
     user_shumeipai = models.ForeignKey(User, on_delete=CASCADE)
 
 
+class Shumeipai_limited(models.Model):
+    shumeipai = models.OneToOneField(Shumeipai, on_delete=CASCADE)
+    tem_max = models.FloatField(default=60)
+    tem_min = models.FloatField(default=0)
+    hum_max = models.FloatField(default=80)
+    hum_min = models.FloatField(default=0)
+    ph_max = models.FloatField(default=8.0)
+    ph_min = models.FloatField(default=6.0)
+    sun_max = models.FloatField(default=1500)
+    sun_min = models.FloatField(default=500)
+
+
 class Main_data(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     temperature = models.FloatField()
