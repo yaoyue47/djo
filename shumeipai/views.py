@@ -288,3 +288,35 @@ def captcha_(request):
     imagepath = "captcha.png"  # 存储验证码 图片 的路径
     image_data = open(imagepath, "rb").read()
     return HttpResponse(image_data, content_type="image/jpg")
+
+
+@csrf_exempt
+def insert_data(request):
+    print(request.body)
+    if request.method == "POST":
+        user = json.loads(request.body).get("user")
+        shumeipai = json.loads(request.body).get("shumeipai")
+        shumeipai_id = json.loads(request.body).get("shumeipai_id")
+        tem = json.loads(request.body).get("tem")
+        tem_f = round(float(tem), 2)
+        hum = json.loads(request.body).get("hum")
+        hum_f = round(float(hum), 2)
+        if user and shumeipai and shumeipai_id and tem and hum:
+            try:
+                user_db = User.objects.get(user_name=user)
+                shumeipai_db = user_db.shumeipai_set.get(pk=shumeipai_id)
+            except:
+                return HttpResponse("用户或者节点名称不存在!")
+            if shumeipai_db.name == shumeipai:
+                shumeipai_db.main_data_set.create(temperature=tem_f, humidity=hum_f)
+                return HttpResponse("成功")
+            else:
+                return HttpResponse("验证失败!")
+        else:
+            return HttpResponse('格式错误!')
+    else:
+        return HttpResponse("请使用post请求!")
+
+# 接口文档:
+# 接受数据:user,shumeipai,shumeipai_id,tem,hum
+# 返回数据:字符串
