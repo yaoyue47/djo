@@ -70,7 +70,9 @@ def home(request):
         shumeipai_getdata = request.GET.get('raspberry')
         set_cookie = False
         cookie_data = ''
-        cookie_get = json.loads(request.COOKIES.get('raspberry'))
+        cookie_get = request.COOKIES.get('raspberry')
+        if cookie_get:
+            cookie_get = json.loads(request.COOKIES.get('raspberry'))
         if shumeipai_getdata and shumeipai_getdata in shumeipai_name:
             shumeipai_now = shumeipai_getdata
             set_cookie = True
