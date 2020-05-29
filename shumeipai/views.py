@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.mail import send_mail
 from shumeipai.models import User, Shumeipai, Main_data, System_inf, Shumeipai_limited
 
 
@@ -302,7 +302,6 @@ def captcha_(request):
 
 @csrf_exempt
 def insert_data(request):
-    print(request.body)
     if request.method == "POST":
         user = json.loads(request.body).get("user")
         shumeipai = json.loads(request.body).get("shumeipai")
@@ -323,6 +322,27 @@ def insert_data(request):
                 return HttpResponse("用户或者节点名称不存在!")
             if shumeipai_db.name == shumeipai:
                 shumeipai_db.main_data_set.create(temperature=tem_f, humidity=hum_f, ph=ph_f, sun=sun_f)
+                shumeipai_limited_db = shumeipai_db.shumeipai_limited.__dict__
+                a = [{'value': tem_f, 'max': 'tem_max', 'min': 'tem_min', 'inf': '温度'},
+                     {'value': hum_f, 'max': 'hum_max', 'min': 'hum_min', 'inf': '湿度'},
+                     {'value': ph_f, 'max': 'ph_max', 'min': 'ph_min', 'inf': "ph"},
+                     {'value': sun_f, 'max': 'sun_max', 'min': 'sun_min', 'inf': "光照强度"}]
+                message = ''
+                for i in a:
+                    if i['value'] > shumeipai_limited_db[i['max']]:
+                        message += shumeipai + '节点处' + i['inf'] + '过高!,请及时处理\n'
+                    if i['value'] < shumeipai_limited_db[i['min']]:
+                        message += shumeipai + '节点处' + i['inf'] + '过低!,请及时处理\n'
+                if message != '':
+                    shumeipai_db.status = False
+                    shumeipai_db.save()
+                    try:
+                        send_mail("节点警告!", message, "2359240697@qq.com", ['2359240697@qq.com'])
+                    except:
+                        print('发送邮箱失败')
+                else:
+                    shumeipai_db.status = True
+                    shumeipai_db.save()
                 return HttpResponse("成功")
             else:
                 return HttpResponse("验证失败!")
