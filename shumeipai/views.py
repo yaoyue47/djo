@@ -367,6 +367,36 @@ def insert_data(request):
     else:
         return HttpResponse("请使用post请求!")
 
+
 # 接口文档:
 # 接受数据:user,shumeipai,shumeipai_id,tem,hum,ph,sun
 # 返回数据:字符串
+
+@csrf_exempt
+def limited(request):  # 0为错1为对
+    if request.method == 'POST':
+        try:
+            shumeipai = json.loads(request.COOKIES.get('raspberry'))
+            shumeipai_db = Shumeipai.objects.get(name=shumeipai)
+            shumeipai_db.shumeipai_limited.tem_max = request.POST.get('tem_max')
+            shumeipai_db.shumeipai_limited.tem_min = request.POST.get('tem_min')
+            shumeipai_db.shumeipai_limited.hum_max = request.POST.get('hum_max')
+            shumeipai_db.shumeipai_limited.hum_min = request.POST.get('hum_min')
+            shumeipai_db.shumeipai_limited.ph_max = request.POST.get('ph_max')
+            shumeipai_db.shumeipai_limited.ph_min = request.POST.get('ph_min')
+            shumeipai_db.shumeipai_limited.sun_max = request.POST.get('sun_max')
+            shumeipai_db.shumeipai_limited.sun_min = request.POST.get('sun_min')
+            switch = True
+            if request.POST.get('switch') == 'false':
+                switch = False
+            shumeipai_db.shumeipai_limited.switch = switch
+            shumeipai_db.shumeipai_limited.save()
+            user = request.session.get('user')
+            user_db = User.objects.get(user_name=user)
+            user_db.email = request.POST.get('email')
+            user_db.save()
+            return HttpResponse("1")
+        except:
+            return HttpResponse("0")
+    else:
+        return HttpResponse("请使用POST请求!")
