@@ -373,7 +373,7 @@ def insert_data(request):
 # 返回数据:字符串
 
 @csrf_exempt
-def limited(request):  # 0为错1为对
+def limited(request):  # 0为错1为对#2邮箱出错
     if request.method == 'POST':
         try:
             shumeipai = json.loads(request.COOKIES.get('raspberry'))
@@ -391,11 +391,14 @@ def limited(request):  # 0为错1为对
                 switch = False
             shumeipai_db.shumeipai_limited.switch = switch
             shumeipai_db.shumeipai_limited.save()
-            user = request.session.get('user')
-            user_db = User.objects.get(user_name=user)
-            user_db.email = request.POST.get('email')
-            user_db.save()
-            return HttpResponse("1")
+            if re_email.validateEmail(request.POST.get('email')) == '0':
+                return HttpResponse("2")
+            else:
+                user = request.session.get('user')
+                user_db = User.objects.get(user_name=user)
+                user_db.email = request.POST.get('email')
+                user_db.save()
+                return HttpResponse("1")
         except:
             return HttpResponse("0")
     else:
