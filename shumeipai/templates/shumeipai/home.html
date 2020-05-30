@@ -6,7 +6,7 @@
     <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
     <!--上面为移动端的解决方案-->
 
-    <link rel="shortcut icon" href="/static/shumeipai/fly.ico" />
+    <link rel="shortcut icon" href="/static/shumeipai/fly.ico"/>
     <!--ico引入-->
 
     <!-- 新 Bootstrap4 核心 CSS 文件 -->
@@ -57,7 +57,9 @@
             <div class="modal-body" style="text-align: center">
                 <h3>欢迎使用本系统!</h3>
                 <br>
-                <h5>当前登录用户:<mark>{{ user }}</mark></h5>
+                <h5>当前登录用户:
+                    <mark>{{ user }}</mark>
+                </h5>
             </div>
             <!-- 模态框底部 -->
             <div class="modal-footer">
@@ -68,6 +70,70 @@
     </div>
 </div>
 <!-- 模态框 -->
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal_baojing">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">告警设置</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1" onclick="checkbox()">
+                    <label class="custom-control-label text-danger" for="customSwitch1">告警总开关</label>
+                </div>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col" style="border-right: #98A6AD solid">
+                        <div id="tem_max_text"><label for="tem_max">温度上限:<span id="tem_max_value"></span><span>℃</span></label>
+                        </div>
+                        <input type="range" step="1" max="100" min="0" id="tem_max" class="custom-range"
+                               oninput="range('tem_max_value','tem_max')"
+                               style="width: 70%;margin: auto;display: block">
+                        <div id="hum_max_text"><label for="hum_max">湿度上限:<span id="hum_max_value"></span><span>%</span></label>
+                        </div>
+                        <input type="range" step="1" max="100" min="0" id="hum_max" class="custom-range"
+                               oninput="range('hum_max_value','hum_max')"
+                               style="width: 70%;margin: auto;display: block">
+                    </div>
+                    <div class="col">
+                        <div id="tem_min_text"><label for="tem_min">温度下限:<span id="tem_min_value"></span><span>℃</span></label>
+                        </div>
+                        <input type="range" step="1" max="100" min="0" id="tem_min" class="custom-range"
+                               oninput="range('tem_min_value','tem_min')"
+                               style="width: 70%;margin: auto;display: block">
+                        <div id="hum_min_text"><label for="hum_min">湿度下限:<span id="hum_min_value"></span><span>%</span></label>
+                        </div>
+                        <input type="range" step="1" max="100" min="0" id="hum_min" class="custom-range"
+                               oninput="range('hum_min_value','hum_min')"
+                               style="width: 70%;margin: auto;display: block">
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="input-group input-group-sm" style="width: 40%;margin: auto">
+                    <label for="email" id="email_text">接收警告邮箱:</label>
+                    <input type="email" class="form-control" id="email">
+                </div>
+
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">提交</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!--头部-->
 <div class="container">
@@ -83,7 +149,9 @@
 
         <div class="dropdown mt-3">
 
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
                 {{ shumeipai_now }}
             </button>
             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -102,6 +170,8 @@
                 </form>
             </div>
 
+            <button type="submit" class="btn btn-secondary ml-3" onclick="baojing()">告警设置</button>
+
             <form method="post" action="api/logout/" style="display: inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-secondary ml-3">登出</button>
@@ -110,7 +180,7 @@
             <form action="api/search/" method="post" style="display: inline">
                 {% csrf_token %}
                 <div class="input-group" style="width: 400px;float: right;">
-                    <input type="date" class="form-control"  id="input_date" name="input_date">
+                    <input type="date" class="form-control" id="input_date" name="input_date">
                     <div class="input-group-append">
                         <button class="btn btn-secondary" type="submit">搜索</button>
                     </div>
@@ -136,7 +206,7 @@
 <!--以下为大模块的页面-->
 
 <!--tabs选项卡-->
-<div class="tabs-basic container  mt-4" >
+<div class="tabs-basic container  mt-4">
 
     <div class="tabs-basic-">
         <ul>
@@ -280,26 +350,48 @@
 </body>
 
 <script type="text/javascript">
-    if(window.location.search==''){
+    if (window.location.search == '') {
         $("#myModal").modal("show");
     }
 
-    var shumeipai_name_list = {{shumeipai|safe}}
+    var shumeipai_name_list =
+    {{shumeipai|safe}}
     var shumeipai_name = '{{ shumeipai_now|safe }}'
 
         getdata(1,"wendu");
     getdata(1,"shidu");
 
-    var myChart_wendu_dom=document.getElementById("main_wendu");
-    var myChart_shidu_dom=document.getElementById("main_shidu");
-    myChart_shidu_dom.style.height=myChart_wendu_dom.clientHeight+"px";
+    var myChart_wendu_dom = document.getElementById("main_wendu");
+    var myChart_shidu_dom = document.getElementById("main_shidu");
+     myChart_shidu_dom.style.height = myChart_wendu_dom.clientHeight + "px";
     myChart_shidu_dom.style.width=myChart_wendu_dom.clientWidth+"px";
     var myChart_wendu = echarts.init(myChart_wendu_dom);
     var myChart_shidu=echarts.init(myChart_shidu_dom);//初始化echarts的对象
 
-    getechartsdata(7,"wendu");//获取图表的数据
+    getechartsdata(7, "wendu");//获取图表的数据
     getechartsdata(7,"shidu");
 
+    function baojing() {
+        $("#myModal_baojing").modal("show");
+    }
+
+    function checkbox() {
+        array = ['tem_max', 'tem_min', 'hum_max', 'hum_min', 'email']
+        array1 = ['tem_max_text', 'tem_min_text', 'hum_max_text', 'hum_min_text','email_text']
+        for (i = 0; i < array.length; i++) {
+            if (document.getElementById("customSwitch1").checked === true) {
+                document.getElementById(array[i]).disabled = false
+                document.getElementById(array1[i]).classList.remove('text-muted')
+            } else {
+                document.getElementById(array[i]).disabled = true
+                document.getElementById(array1[i]).classList.add('text-muted')
+            }
+        }
+    }
+
+    function range(span, input) {
+        document.getElementById(span).innerHTML = document.getElementById(input).value
+    }
 </script>
 
 </html>
