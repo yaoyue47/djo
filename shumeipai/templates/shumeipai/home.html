@@ -95,44 +95,44 @@
                         <div id="tem_max_text"><label for="tem_max">温度上限:<span id="tem_max_value"></span><span>℃</span></label>
                         </div>
                         <input type="range" step="1" max="100" min="0" id="tem_max" class="custom-range"
-                               oninput="range('tem_max_value','tem_max')"
+                               oninput="range('tem_max_value','tem_max')" value="{{ limited.0 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="hum_max_text"><label for="hum_max">湿度上限:<span id="hum_max_value"></span><span>%</span></label>
                         </div>
                         <input type="range" step="1" max="100" min="0" id="hum_max" class="custom-range"
-                               oninput="range('hum_max_value','hum_max')"
+                               oninput="range('hum_max_value','hum_max')" value="{{ limited.2 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="ph_max_text"><label for="ph_max">ph值上限:<span
                                 id="ph_max_value"></span><span></span></label></div>
                         <input type="range" step="0.1" max="9" min="5" id="ph_max" class="custom-range"
-                               oninput="range('ph_max_value','ph_max')"
+                               oninput="range('ph_max_value','ph_max')" value="{{ limited.4 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="sun_max_text"><label for="sun_max">光照上限:<span
                                 id="sun_max_value"></span><span>lux</span></label></div>
                         <input type="range" step="1" max="2000" min="0" id="sun_max" class="custom-range"
-                               oninput="range('sun_max_value','sun_max')"
+                               oninput="range('sun_max_value','sun_max')" value="{{ limited.6 }}"
                                style="width: 70%;margin: auto;display: block">
                     </div>
                     <div class="col">
                         <div id="tem_min_text"><label for="tem_min">温度下限:<span id="tem_min_value"></span><span>℃</span></label>
                         </div>
                         <input type="range" step="1" max="100" min="0" id="tem_min" class="custom-range"
-                               oninput="range('tem_min_value','tem_min')"
+                               oninput="range('tem_min_value','tem_min')" value="{{ limited.1 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="hum_min_text"><label for="hum_min">湿度下限:<span id="hum_min_value"></span><span>%</span></label>
                         </div>
                         <input type="range" step="1" max="100" min="0" id="hum_min" class="custom-range"
-                               oninput="range('hum_min_value','hum_min')"
+                               oninput="range('hum_min_value','hum_min')" value="{{ limited.3 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="ph_min_text"><label for="ph_min">ph值下限:<span
                                 id="ph_min_value"></span><span></span></label></div>
                         <input type="range" step="0.1" max="9" min="5" id="ph_min" class="custom-range"
-                               oninput="range('ph_min_value','ph_min')"
+                               oninput="range('ph_min_value','ph_min')" value="{{ limited.5 }}"
                                style="width: 70%;margin: auto;display: block">
                         <div id="sun_min_text"><label for="sun_min">光照下限:<span
                                 id="sun_min_value"></span><span>lux</span></label></div>
                         <input type="range" step="1" max="2000" min="0" id="sun_min" class="custom-range"
-                               oninput="range('sun_min_value','sun_min')"
+                               oninput="range('sun_min_value','sun_min')" value="{{ limited.7 }}"
                                style="width: 70%;margin: auto;display: block">
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                 <br>
                 <div class="input-group input-group-sm" style="width: 40%;margin: auto">
                     <label for="email" id="email_text">接收警告邮箱:</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" value="{{ email }}">
                 </div>
 
             </div>
@@ -532,9 +532,12 @@
         $("#myModal_baojing").modal("show");
     }
 
+    document.getElementById("customSwitch1").checked = {{ switch|lower }}
+        checkbox()
+
     function checkbox() {
         array = ['tem_max', 'tem_min', 'hum_max', 'hum_min', 'ph_max', 'ph_min', 'sun_max', 'sun_min', 'email']
-        array1 = ['tem_max_text', 'tem_min_text', 'hum_max_text', 'hum_min_text', 'ph_max_text', 'ph_min_text', 'sun_max_text', 'sun_min_text','email_text']
+        array1 = ['tem_max_text', 'tem_min_text', 'hum_max_text', 'hum_min_text', 'ph_max_text', 'ph_min_text', 'sun_max_text', 'sun_min_text', 'email_text']
         for (i = 0; i < array.length; i++) {
             if (document.getElementById("customSwitch1").checked === true) {
                 document.getElementById(array[i]).disabled = false
@@ -544,6 +547,14 @@
                 document.getElementById(array1[i]).classList.add('text-muted')
             }
         }
+    }
+
+    range_data = {
+        span: ['tem_max_value', 'tem_min_value', 'hum_max_value', 'hum_min_value', 'ph_max_value', 'ph_min_value', 'sun_max_value', 'sun_min_value'],
+        input: ['tem_max', 'tem_min', 'hum_max', 'hum_min', 'ph_max', 'ph_min', 'sun_max', 'sun_min']
+    }
+    for (i = 0; i < range_data.span.length; i++) {
+        range(range_data.span[i], range_data.input[i])
     }
 
     function range(span, input) {
