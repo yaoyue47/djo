@@ -27,6 +27,7 @@ class Shumeipai_limited(models.Model):
     ph_min = models.FloatField(default=6.0)
     sun_max = models.FloatField(default=1500)
     sun_min = models.FloatField(default=500)
+    switch = models.BooleanField(default=True)
 
 
 class Main_data(models.Model):

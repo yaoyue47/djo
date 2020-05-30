@@ -338,10 +338,11 @@ def insert_data(request):
                 if message != '':
                     shumeipai_db.status = False
                     shumeipai_db.save()
-                    try:
-                        send_mail("节点警告!", message, "2359240697@qq.com", ['2359240697@qq.com'])
-                    except:
-                        print('发送邮箱失败')
+                    if shumeipai_db.shumeipai_limited.switch:
+                        try:
+                            send_mail("节点警告!", message, "2359240697@qq.com", ['2359240697@qq.com'])
+                        except:
+                            print('发送邮箱失败')
                 else:
                     shumeipai_db.status = True
                     shumeipai_db.save()
