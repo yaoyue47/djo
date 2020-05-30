@@ -83,6 +83,7 @@ def home(request):
             shumeipai_now = shumeipai_name[0]
             set_cookie = True
             cookie_data = shumeipai_name[0]
+        shumeipai_db = Shumeipai.objects.get(name=shumeipai_now)
         click_time_db = System_inf.objects.get(pk=1)
         click_time = click_time_db.click_time + 1
         click_time_db.click_time = click_time
@@ -91,7 +92,15 @@ def home(request):
             'user': user,
             'shumeipai': shumeipai_name,
             'shumeipai_now': shumeipai_now,
-            'click_time': click_time
+            'click_time': click_time,
+            'switch': shumeipai_db.shumeipai_limited.switch,
+            'limited': [
+                shumeipai_db.shumeipai_limited.tem_max,
+                shumeipai_db.shumeipai_limited.tem_min,
+                shumeipai_db.shumeipai_limited.hum_max,
+                shumeipai_db.shumeipai_limited.hum_min,
+            ],
+            'email': user_id.email
         }
         response = render(request, 'shumeipai/home.html', render_data)
         if set_cookie:
