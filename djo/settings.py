@@ -25,7 +25,6 @@ SECRET_KEY = '%06$z&5l6_ku_1&kj1+97xp-89ff69j*m9lk!id@+i1zuyn5m4'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'yaoyue.xyz',
     '127.0.0.1',
 ]
 
