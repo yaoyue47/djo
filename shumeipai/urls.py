@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/insert_data/', views.insert_data, name='insert_data'),
     path('home/api/logout/', views.logout, name='logout'),
     path('home/api/search/', views.search, name='search'),
+    path('home/api/limited/', views.limited, name='limited'),
     path('home/api/configure/', views.configure, name='configure'),
     path('home/api/configure/delete/', views.configure_delete, name='configure_delete'),
     path('home/api/configure/update/', views.configure_update, name='configure_update'),

@@ -127,7 +127,7 @@
 
             <!-- 模态框底部 -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary">提交</button>
+                <button type="button" class="btn btn-secondary" onclick="submit_limited()" data-dismiss="modal">提交</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
             </div>
 
@@ -403,6 +403,34 @@
 
     function range(span, input) {
         document.getElementById(span).innerHTML = document.getElementById(input).value
+    }
+
+    function submit_limited() {
+        $.ajax({
+            url: "api/limited/",    //请求的url地址
+            data: {
+                'tem_max': document.getElementById('tem_max').value,
+                'tem_min': document.getElementById('tem_min').value,
+                'hum_max': document.getElementById('hum_max').value,
+                'hum_min': document.getElementById('hum_min').value,
+                'switch': document.getElementById("customSwitch1").checked,
+                'email': document.getElementById('email').value
+            },
+            type: "POST",   //请求方式
+            success: function (req) {
+                if (req === '1') {
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else {
+                    alert('错误!请联系管理员')
+                }
+            },
+
+            error: function () {
+                alert('请求失败!')
+            }
+        });
     }
 </script>
 
