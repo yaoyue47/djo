@@ -127,7 +127,9 @@
 
             <!-- 模态框底部 -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="submit_limited()" data-dismiss="modal">提交</button>
+                <button type="button" class="btn btn-secondary" onclick="reset_limited()">重置</button>
+                <button type="button" class="btn btn-secondary" onclick="submit_limited()" data-dismiss="modal">提交
+                </button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
             </div>
 
@@ -422,8 +424,10 @@
                     setTimeout(function () {
                         location.reload();
                     }, 500);
+                } else if (req === '2') {
+                    alert('邮箱格式出错')
                 } else {
-                    alert('错误!请联系管理员')
+                    alert('出错了,请联系管理员')
                 }
             },
 
@@ -431,6 +435,24 @@
                 alert('请求失败!')
             }
         });
+    }
+
+    function reset_limited() {
+        document.getElementById('tem_max').value = 60
+        document.getElementById('tem_min').value = 0
+        document.getElementById('hum_max').value = 80
+        document.getElementById('hum_min').value = 0
+        document.getElementById("customSwitch1").checked = true
+        document.getElementById('email').value = '{{ email }}'
+        checkbox()
+        range_data = {
+            span: ['tem_max_value', 'tem_min_value', 'hum_max_value', 'hum_min_value'],
+            input: ['tem_max', 'tem_min', 'hum_max', 'hum_min']
+        }
+        for (i = 0; i < range_data.span.length; i++) {
+            range(range_data.span[i], range_data.input[i])
+        }
+
     }
 </script>
 
