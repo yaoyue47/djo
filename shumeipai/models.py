@@ -23,6 +23,7 @@ class Shumeipai_limited(models.Model):
     tem_min = models.FloatField(default=0)
     hum_max = models.FloatField(default=80)
     hum_min = models.FloatField(default=0)
+    switch = models.BooleanField(default=True)
 
 
 class Main_data(models.Model):
